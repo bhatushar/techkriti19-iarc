@@ -33,7 +33,12 @@ void Driver::Motor::apply(int v1, int v2) {
 }
 
 // Drive bot in desired direction
-void Driver::move(int direction, int volt, bool rotate = false) {
+void Driver::move(int direction, int volt, int rotate) {
+    // Constant of rotation
+    // Calculated using given volt
+    // Multiplied with the rotation angle to get delay time
+    int kR = 0;
+    
     if (rotate) stop(); // Stop before rotating
 
     switch(direction) {
@@ -49,28 +54,28 @@ void Driver::move(int direction, int volt, bool rotate = false) {
             break;
         case LEFT:
             if (rotate) {
-                // Rotate motors in opposite direction
-                // Left backward, right forward
-                mLeft.apply(0, baseVolt + volt);
+                // Keep left wheel fixed, rotate right wheel
                 mRight.apply(baseVolt + volt, 0);
-            } else {
-                // Don't rotate, but slide
-                // Rotate left motor faster than right motor
-                mLeft.apply(baseVolt + volt, 0);
-                mRight.apply(baseVolt, 0);
-            }
-            break;
-        case RIGHT:
-            if (rotate) {
-                // Rotate motors in opposite direction
-                // Left forward, right backward
-                mLeft.apply(baseVolt + volt, 0);
-                mRight.apply(0, baseVolt + volt);
+                delay(kR * rotate);
+                mRight.apply(0, 0); // Stop right wheel
             } else {
                 // Don't rotate, but slide
                 // Rotate left motor slower than right motor
                 mLeft.apply(baseVolt, 0);
                 mRight.apply(baseVolt + volt, 0);
+            }
+            break;
+        case RIGHT:
+            if (rotate) {
+                // Keep right wheel fixed, rotate left wheel
+                mLeft.apply(baseVolt + volt, 0);
+                delay(kR * rotate);
+                mLeft.apply(0, 0); // Stop left wheel
+            } else {
+                // Don't rotate, but slide
+                // Rotate left motor faster than right motor
+                mLeft.apply(baseVolt + volt, 0);
+                mRight.apply(baseVolt, 0);
             }
             break;
     }
@@ -94,7 +99,7 @@ void Driver::countTicks() {
 }
 
 float Driver::getDistanceTravelled() {
-    int distance, radius = 2.1, pi = 3.14;
+    //int distance, radius = 2.1, pi = 3.14;
     // todo implement rest of it, Im so lazy right now
-    return distance;
+    return 0.0;//distance;
 }

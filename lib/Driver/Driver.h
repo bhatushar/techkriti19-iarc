@@ -1,6 +1,10 @@
 #ifndef DRIVER_H
 #define DRIVER_H
 
+/**
+ * The library is repsosible for movement of the bot. 
+ * It interacts with the motors and the rotary encoder. It uses them to move the bot in desired direction and calculate the distance travelled.
+ */
 class Driver {
 private:
     /**
@@ -52,13 +56,14 @@ public:
 
     /**
      * Drives the bot in desired direction by applying the given voltage to the respective motors.
-     * It can also rotate the bot at the same position.
+     * It can also rotate the bot. To rotate, an angle in degree is passed.
+     * Since, it is a three-wheel setup, bot is rotated while keeping one wheel fixed and rotating the other.
      * 
      * @param direction One of the FORWARD, LEFT, RIGHT or BACKWARD direction
      * @param v Voltage to be applied
-     * @param rotate Whether the bot should be rotated or not (default = false)
+     * @param rotate Rotation angle in degree (default = 0)
      */
-    void move(int, int, bool = false);
+    void move(int, int, int = 0);
     
     /**
      * Stops all the motors by writing 0 on all pins.
