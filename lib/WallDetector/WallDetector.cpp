@@ -43,7 +43,7 @@ void WallDetector::UltrasonicSensor::calcDistance() {
 }
 
 // Detects deviatipon from wall
-int WallDetector::detect(int wall) {
+int WallDetector::detect(short wall) {
     // Unknown wall index
     if (wall > 2 || wall < 0) return 0;
  
@@ -51,15 +51,16 @@ int WallDetector::detect(int wall) {
     sensors[wall].calcDistance();
 
     // Extreme points
-    if (sensors[wall].mm <= MIN_DIST) return MIN_DIST;
-    else if (sensors[wall].mm >= MAX_DIST) return MAX_DIST;
+    if (sensors[wall].mm <= MIN_DIST) throw MIN_DIST;
+    else if (sensors[wall].mm >= MAX_DIST) throw MAX_DIST;
 
     // Deviation from last time
-    return prevDist - sensors[wall].mm;
+    return sensors[wall].mm - prevDist;
 }
 
 // Calculate voltage
 int WallDetector::calcVolt(int err) {
+    // TODO tune pid constants
     int kP = 0, kI = 0, kD = 0;
     int P = kP * err,
         D = kD * (err - prevErr);
@@ -67,4 +68,16 @@ int WallDetector::calcVolt(int err) {
     prevErr = err;
     int retval = P + (kI * errSum) + D;
     return (retval < 0) ? -retval : retval;
+}
+
+// Check for wall
+bool WallDetector::hasWall(short wall) {
+    // Unkown wall index
+    if (wall > 2 || wall < 0) return false;
+    
+    sensors[wall].calcDistance();
+    // Wall within range
+    if (sensors[wall].mm <= MAX_DIST) return true;
+    // No wall
+    else return false;
 }

@@ -2,7 +2,7 @@
 #define WALL_DETECTOR_H
 
 /**
- * WallDetector class conatins methods and sttributes provide wall following functionality.
+ * WallDetector class conatins methods and attributes provide wall following functionality.
  * The class interacts with the ultrasonic sensors connected to the robot.
  */
 class WallDetector {
@@ -24,7 +24,7 @@ private:
 
 public:
     // Wall indices
-    const static int LEFT = 0, FRONT = 1, RIGHT = 2;
+    const static short LEFT = 0, FRONT = 1, RIGHT = 2;
     // Minimum and maximum distance allowed from the wall
     int MIN_DIST, MAX_DIST;
     
@@ -46,7 +46,7 @@ public:
      * @param wall Wall index; LEFT, FRONT or RIGHT
      * @return Returns deviation if the distance is within threshold, otherwise the threshold value is returned.
      */
-    int detect(int);
+    int detect(short);
 
     /**
      * Calculates the analog voltage value which will be passed to the motors.
@@ -61,6 +61,15 @@ public:
      * @return Voltage to be applied to the motors
      */
     int calcVolt(int);
+
+    /**
+     * Checks if a wall is present on the given side. 
+     * Wall is confirmed if it's within the given range.
+     * 
+     * @param wall Wall index
+     * @return Wall status
+     */
+    bool hasWall(short);
 
     // Destructor
     ~WallDetector();
