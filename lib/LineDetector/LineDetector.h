@@ -86,6 +86,16 @@ public:
     bool isNode();
 
     /**
+     * Determines the type of node based on it's middle section.
+     * In a false node, the two center nodes lie on black surface.
+     * In a true node, all nodes on are white surface.
+     * The LineDetector::detect() method must be invoked before calling this method since it uses the value read by the sensors.
+     * 
+     * @return "TRUE" or "FALSE"
+     */
+    String nodeType();
+
+    /**
      * Checks if the bot is at a 120 degree junction.
      * Here, the line spilts into two lines, each making 120 degrees with the other. The lines are 3cm wide.
      * A junction will be detected if the two sensors in the center read DIGITAL HIGH while all other sensors read DIGITAL LOW.

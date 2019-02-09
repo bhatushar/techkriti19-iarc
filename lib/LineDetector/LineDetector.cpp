@@ -131,3 +131,13 @@ bool LineDetector::is90Turn() {
 
     return isTurn;
 }
+
+// Identify node type
+String LineDetector::nodeType() {
+    // If the center two sensors are on black
+    if (sensors[3].value == LOW && sensors[4].value == LOW)
+        // FALSE node
+        return "FALSE";
+    // All on white; TRUE node
+    return "TRUE";
+}
