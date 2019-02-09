@@ -73,12 +73,13 @@ public:
 
     /**
      * Checks for the beginning of a node.
-     * Nodes are 6x6 cm in dimension, and the beginning of every node is marked by an OFF-ON-OFF zone.
+     * Nodes are 9x9 cm in dimension, and the beginning of every node is marked by an OFF-ON-OFF zone.
      * Assuming the bot is perfectly aligned, the sensors will follows this pattern
-     * Sensor     |  1 | 2  | 3   | 4  | 5  | 6   | 7  | 8
-     * -----------|----|----|-----|----|----|-----|----|---
-     * Value read | ON | ON | OFF | ON | ON | OFF | ON | ON
-     * The sensors on the extreme must read DIGITAL HIGH, this seperates node from a 120 degree junction.
+     * Sensor             | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8
+     * -------------------|---|---|---|---|---|---|---|---
+     * Perfectly alligned | 1 | 0 | 0 | 1 | 1 | 0 | 0 | 1
+     * Right shifted      | 0 | 0 | 1 | 1 | 0 | 0 | 1 | 1
+     * Left shifted       | 1 | 1 | 0 | 0 | 1 | 1 | 0 | 0
      * The LineDetector::detect() method must be invoked before calling this method since it uses the value read by the sensors.
      * 
      * @return Node status

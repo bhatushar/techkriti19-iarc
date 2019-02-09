@@ -79,15 +79,28 @@ bool LineDetector::isCrossSection() {
 
 // Checks for a node
 bool LineDetector::isNode() {
-    for (int i = 0; i < MAX_SENSORS; i++) {
-        if (i == 2 || i == 5) {
-            // Only sensors[2] and sensors[5] should be on the black line
-            if (sensors[i].value == true)
-                return false;
-        }
-        else if (sensors[i].value == false)
-            return false;
+    // The pattern to be matched with the sensor values
+    bool pattern[3][MAX_SENSORS] = {
+        {1,0,0,1,1,0,0,1}, // Perfectly aligned
+        {0,0,1,1,0,0,1,1}, // Right shifted
+        {1,1,0,0,1,1,0,0}  // Left shifted
+    };
+    // Shows whether a pattern is matched
+    bool matched;
+
+    // Check if sensor values matches with any one pattern
+    for (int i = 0; i < 3; i++) {
+        matched = true;
+        for (int j = 0; j < MAX_SENSORS; j++)
+            if (sensors[j].value != pattern[i][j]) {
+                // Match failed; Move on to next
+                matched = false;
+                break;
+            }
+        // Matched; Don't check rest
+        if (matched) break;
     }
+    return matched;
 
     return true;
 }
