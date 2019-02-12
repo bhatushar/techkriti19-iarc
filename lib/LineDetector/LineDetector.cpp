@@ -152,5 +152,5 @@ String LineDetector::nodeType() {
         // FALSE node
         return "FALSE";
     // All on white; TRUE node
-    return "TRUE";
+    return "TRUE "; // whitespace in the end to match string length of "FALSE"
 }
