@@ -12,6 +12,7 @@ WallDetector::WallDetector(int pins[][2], int thresh[]) {
     
     MIN_DIST = thresh[0];
     MAX_DIST = thresh[1];
+    AVG_DIST = (MIN_DIST + MAX_DIST) / 2;
 
     errSum = 0;
     prevErr = 0;
@@ -35,7 +36,8 @@ void WallDetector::UltrasonicSensor::calcDistance() {
     // Calculate distance in cm
     duration = pulseIn(echo, HIGH);
     
-    /* Speed of sound in air, v = 346 m/s
+    /* 
+     * Speed of sound in air, v = 346 m/s
      * Time taken, t = 0.5(t E-6) s
      * distance = v * t = 0.173t
      */
@@ -43,31 +45,51 @@ void WallDetector::UltrasonicSensor::calcDistance() {
 }
 
 // Detects deviatipon from wall
-int WallDetector::detect(short wall) {
+int WallDetector::detect(byte wall) {
     // Unknown wall index
-    if (wall > 2 || wall < 0) return 0;
- 
-    int prevDist = sensors[wall].mm;
-    sensors[wall].calcDistance();
+    if (wall != LEFT && wall != RIGHT) return 0;
 
-    // Extreme points
-    if (sensors[wall].mm <= MIN_DIST) throw MIN_DIST;
-    else if (sensors[wall].mm >= MAX_DIST) throw MAX_DIST;
+    sensors[wall].calcDistance(); // Distance from given wall
+    sensors[FRONT].calcDistance(); // Distance from front wall; used in PID
 
-    // Deviation from last time
-    return sensors[wall].mm - prevDist;
+    // Extreme point
+    if (sensors[wall].mm >= MAX_DIST) return MAX_DIST;
+
+    // Deviation from center line
+    return sensors[wall].mm - AVG_DIST;
 }
 
 // Calculate voltage
+// ! No measures if the bot reaches MIN_DIST from wall
 int WallDetector::calcVolt(int err) {
-    // TODO tune pid constants
-    int kP = 0, kI = 0, kD = 0;
-    int P = kP * err,
+    // A value is generated only if bot doesn't cross the average distance from front wall
+    if (AVG_DIST < sensors[FRONT].mm) {
+        /*
+         * kP1: Constant of propotionality. Sets propotionality with err value.
+         * kP2: Constant of propotionality. Sets propotionality with distance from front wall. 
+         *      Responsible for slowing down bot as it approaches front wall.
+         * kI: Constant of integration. Sets integral  relation with err value.
+         * kD: Constant of differentiation. Sets differential relation with err value.
+         */
+        // TODO tune pid constants
+        int kP1 = 0, kP2 = 0, kI = 0, kD = 0,
+            P, D;
+        
+        /*
+         * Relatinal variable with distance from front wall.
+         * If the distance from front wall is greater  than MAX_DIST, it is set to zero (ignored).
+         * Otherwise it set to (Average distance - Distance from front wall). Always negative.
+         * Responsible for slowing down bot as it approaches front wall.
+         */
+        int x = (sensors[FRONT].mm > MAX_DIST) ? 0 : AVG_DIST - sensors[FRONT].mm;
+        
+        // Standard PID caluclations
+        P = (kP1 * err) + (kP2 * x);1
         D = kD * (err - prevErr);
-    errSum += err;
-    prevErr = err;
-    int retval = P + (kI * errSum) + D;
-    return (retval < 0) ? -retval : retval;
+        errSum += err;
+        prevErr = err;
+        return abs(P + (kI * errSum) + D);
+    } else return -1; // Wall on front, don't move
 }
 
 // Check for wall

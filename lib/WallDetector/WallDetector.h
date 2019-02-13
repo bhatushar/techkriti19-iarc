@@ -24,9 +24,10 @@ private:
 
 public:
     // Wall indices
-    const static short LEFT = 0, FRONT = 1, RIGHT = 2;
+    const static byte LEFT = 0, FRONT = 1, RIGHT = 2;
     // Minimum and maximum distance allowed from the wall
-    int MIN_DIST, MAX_DIST;
+    int MIN_DIST, MAX_DIST,
+        AVG_DIST; // Average distance to be maintained from the wall (center line)
     
     /**
      * Contructor
