@@ -1,8 +1,9 @@
 #include <Arduino.h>
 #include <Driver.h>
+#include <Wire.h>
 
 // Contructor
-Driver::Driver(int mPins[][2], int base, int enPins[]) {
+Driver::Driver(int mPins[][2], int base) {
     // Assigning pins
     mLeft.positive = mPins[0][0];
     mLeft.negative = mPins[0][1];
@@ -17,10 +18,8 @@ Driver::Driver(int mPins[][2], int base, int enPins[]) {
     // Setting base voltage
     baseVolt = base;
 
-    // Assigning endoer pin
-    // Pin mode is set in initEncoder() method
-    encoderA = enPins[0];
-    encoderB = enPins[1];
+    // join I2C bus (address optional for master)
+    Wire.begin();
 }
 
 // Destructor
@@ -87,19 +86,29 @@ void Driver::stop() {
     mRight.apply(0, 0);
 }
 
+// Start encoding
 void Driver::initEncoder() {
-    pinMode(encoderA, INPUT);
-    pinMode(encoderB, INPUT);
-    attachInterrupt(digitalPinToInterrupt(encoderA), countTicks, CHANGE);
+    Wire.beginTransmission(8);
+    Wire.write(1); // Start encoder
+    Wire.endTransmission();
 }
 
-void Driver::countTicks() {
-    // TODO check whether using both interrupt pins gives a more accurate result
-    ticks++;
+// Stop encoding
+void Driver::stopEncoder() {
+    Wire.beginTransmission(8);
+    Wire.write(0); // Stop encoder
+    Wire.endTransmission();
 }
 
+// Return distance travelled
 float Driver::getDistanceTravelled() {
-    //int distance, radius = 2.1, pi = 3.14;
-    // todo implement rest of it, Im so lazy right now
-    return 0.0;//distance;
+    short size = sizeof(float);
+    union Distance {
+        float value;
+        char bytes[sizeof(float)];
+    } dist;
+    
+    Wire.requestFrom(8, size);
+    Wire.readBytes(dist.bytes, size); // Read bytes
+    return dist.value; // Return equivalent float value
 }

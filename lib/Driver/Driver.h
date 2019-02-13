@@ -25,16 +25,6 @@ private:
 
     // Minimum voltage to be applied to the motors
     int baseVolt;
-    
-    // Encoder outputs
-    int encoderA, encoderB;
-    // Number of ticks made by encoder.
-    volatile static int ticks;
-
-    /**
-     * Increment ticks everytime the encoder rotates
-     */
-    static void countTicks();
 
 public:
     // Directional constants
@@ -47,9 +37,8 @@ public:
      * 
      * @param mPins[][2] (positive, negative) pin pairs of left and right motor respectively.
      * @param base Minimum voltage to be applied
-     * @param enPins[] Encoder output A and B pin respectively.
      */    
-    Driver(int[][2], int, int[]);
+    Driver(int[][2], int);
 
     // Destructor
     ~Driver();
@@ -71,12 +60,19 @@ public:
     void stop();
     
     /**
-     * Attaches interrupt to encoder pins
+     * Writes signal to Slave to start encoder.
      */
     void initEncoder();
+
+    /**
+     * Writes signal to Slave to stop encoder.
+     */
+    void stopEncoder();
     
     /**
-     * Calculate the distance travelled using the number of ticks
+     * Requests distance from the Slave.
+     * 
+     * @return Distance Travelled
      */
     float getDistanceTravelled();
 };
