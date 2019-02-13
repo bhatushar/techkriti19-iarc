@@ -72,6 +72,7 @@ short mazeSolving(short primaryTurn) {
         }
         /*
         No deviation, one of the following situations are possible:
+            - Bot is off line: Wrong trun taken, turn around
             - Bot is on cross-section:
                 - End of section is reached: Set wallSide and return from method
                 - Normal cross-section: Turn to primanry side
@@ -79,8 +80,11 @@ short mazeSolving(short primaryTurn) {
             - Bot is on a node: Cross the node, increase counter and display node type
         */
         else {
+            if (Globals::line.ifOffLine()) {
+                Globals::driver.move(primaryTurn, 0, 180); // Rotate 180 degrees at base volt
+            }
             // Cross-section
-            if (Globals::line.isCrossSection()) {
+            else if (Globals::line.isCrossSection()) {
                 // At least one node is present
                 if (nodeCount > 0) {
                     // Check for left wall
