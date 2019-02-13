@@ -53,10 +53,13 @@ void receiveEvent(int numBytes) {
  */
 void calcDistace() {
   Distance dist;
-  int pi = 3.14,
+  float pi = 3.14,
     diameter = 7, // Diameter of wheel
+    // TODO find tickRate
     tickRate = 0; // Ticks in 1 rotation
-  int rotations = ticks / tickRate; 
+
+  // Rotations made by the wheel
+  float rotations = ticks / tickRate; 
   dist.value = (pi * diameter) * rotations; // Circumference * Number of rotations
   Wire.write(dist.bytes);
 }
