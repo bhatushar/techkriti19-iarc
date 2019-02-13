@@ -2,7 +2,7 @@
 #include "WallDetector.h"
 
 // Constructor
-WallDetector::WallDetector(int pins[][2], int thresh[]) {
+WallDetector::WallDetector(byte pins[][2], uint16_t thresh[]) {
     for (int i = 0; i < 3; i++) {
         sensors[i].trig = pins[i][0];
         sensors[i].echo = pins[i][1];
@@ -93,7 +93,7 @@ int WallDetector::calcVolt(int err) {
 }
 
 // Check for wall
-bool WallDetector::hasWall(short wall) {
+bool WallDetector::hasWall(byte wall) {
     // Unkown wall index
     if (wall > 2 || wall < 0) return false;
     

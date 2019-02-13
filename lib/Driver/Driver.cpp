@@ -3,7 +3,7 @@
 #include <Wire.h>
 
 // Contructor
-Driver::Driver(int mPins[][2], int base) {
+Driver::Driver(byte mPins[][2], byte base) {
     // Assigning pins
     mLeft.positive = mPins[0][0];
     mLeft.negative = mPins[0][1];
@@ -26,13 +26,13 @@ Driver::Driver(int mPins[][2], int base) {
 Driver::~Driver() {}
 
 // Writes signal to motor
-void Driver::Motor::apply(int v1, int v2) {
+void Driver::Motor::apply(byte v1, byte v2) {
     analogWrite(positive, v1);
     analogWrite(negative, v2);
 }
 
 // Drive bot in desired direction
-void Driver::move(int direction, int volt, int rotate) {
+void Driver::move(byte direction, byte volt, byte rotate) {
     // Constant of rotation
     // Calculated using given volt
     // Multiplied with the rotation angle to get delay time

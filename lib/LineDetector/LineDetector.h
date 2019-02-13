@@ -8,7 +8,7 @@
 class LineDetector{
 private:
     // Maximum number of sensors available
-    const static short MAX_SENSORS = 8;
+    const static byte MAX_SENSORS = 8;
 
     /**
      * The bot currently contains a line sensor array with 8 IR sensors.
@@ -17,8 +17,8 @@ private:
      * Each sensor has an assigned pin and a weight. It also stores the last read value.
      */
     struct IRSensor {
-        int pin,
-            weight;
+        byte pin;
+        int8_t weight;
         bool value; // Values are digitally read, so it can be stored in boolean type.
     } sensors[MAX_SENSORS];
     
@@ -37,7 +37,7 @@ public:
      * 
      * @param pins Sensor pins in left to right sequence
      */
-    LineDetector(int[]);
+    LineDetector(byte[]);
     
     // Destructor
     ~LineDetector();

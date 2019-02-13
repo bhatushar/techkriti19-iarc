@@ -14,8 +14,8 @@ private:
      * It also contains a method to calculate distance.
      */
     struct UltrasonicSensor {
-        int trig, echo; // Trigger and echo pin
-        int mm; // Distance measured by the sensor
+        byte trig, echo; // Trigger and echo pin
+        uint16_t mm; // Distance measured by the sensor
         void calcDistance(); //Calculates distance of the wall from the given sensor and stores that distance in mm attribute.
     } sensors[3]; // Left, front and right sensor
 
@@ -26,7 +26,7 @@ public:
     // Wall indices
     const static byte LEFT = 0, FRONT = 1, RIGHT = 2;
     // Minimum and maximum distance allowed from the wall
-    int MIN_DIST, MAX_DIST,
+    uint16_t MIN_DIST, MAX_DIST,
         AVG_DIST; // Average distance to be maintained from the wall (center line)
     
     /**
@@ -37,7 +37,7 @@ public:
      * @param pins (trig, echo) pin pairs for left, front and right ultrasonic sensors respectively
      * @param thresh Minimum and maximum threshold, i.e., allowed distance from the wall
      */
-    WallDetector(int[][2], int[]);
+    WallDetector(byte[][2], uint16_t[]);
 
     /**
      * Method calculates deviation from the wall.
@@ -70,7 +70,7 @@ public:
      * @param wall Wall index
      * @return Wall status
      */
-    bool hasWall(short);
+    bool hasWall(byte);
 
     // Destructor
     ~WallDetector();

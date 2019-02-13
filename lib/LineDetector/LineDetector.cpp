@@ -2,11 +2,9 @@
 #include <LineDetector.h>
 
 // Constructor
-LineDetector::LineDetector(int pins[]) {
-    int i;
-    
+LineDetector::LineDetector(byte pins[]) {
     // Assiging pins
-    for (i = 0; i < MAX_SENSORS; i++) {
+    for (int i = 0; i < MAX_SENSORS; i++) {
         sensors[i].pin = pins[i];
         pinMode(pins[i], INPUT);
     }

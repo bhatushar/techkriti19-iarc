@@ -13,22 +13,22 @@ private:
      */
     struct Motor {
         // Motor terminals
-        int positive, negative;
+        byte positive, negative;
         /**
          * Method writes digital signal to the positive and negative pins of the motor, respectively.
          * 
          * @param v1 Value to be written at positive terminal
          * @param v2 Value to be written at negative terminal
          */
-        void apply(int, int);
+        void apply(byte, byte);
     } mLeft, mRight; // Left and right motors.
 
     // Minimum voltage to be applied to the motors
-    int baseVolt;
+    byte baseVolt;
 
 public:
     // Directional constants
-    const static short LEFT = 0, FORWARD = 1, RIGHT = 2, BACKWARD = 3;
+    const static byte LEFT = 0, FORWARD = 1, RIGHT = 2, BACKWARD = 3;
 
     /**
      * Constructor
@@ -38,7 +38,7 @@ public:
      * @param mPins[][2] (positive, negative) pin pairs of left and right motor respectively.
      * @param base Minimum voltage to be applied
      */    
-    Driver(int[][2], int);
+    Driver(byte[][2], byte);
 
     // Destructor
     ~Driver();
@@ -50,9 +50,9 @@ public:
      * 
      * @param direction One of the FORWARD, LEFT, RIGHT or BACKWARD direction
      * @param v Voltage to be applied
-     * @param rotate Rotation angle in degree (default = 0)
+     * @param rotate Rotation angle in degree. Range: 0 to 180 (default = 0)
      */
-    void move(int, int, int = 0);
+    void move(byte, byte, byte = 0);
     
     /**
      * Stops all the motors by writing 0 on all pins.
