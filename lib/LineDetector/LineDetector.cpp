@@ -77,6 +77,14 @@ bool LineDetector::isCrossSection() {
     return false;
 }
 
+// Check if off the line
+bool LineDetector::isOffLine() {
+    for (int i = 0; i < MAX_SENSORS; i++)
+        if (sensors[i].value == 0)
+            return false; // Sensor on line
+    return true; // No sensor on line
+}
+
 // Checks for a node
 bool LineDetector::isNode() {
     // The pattern to be matched with the sensor values

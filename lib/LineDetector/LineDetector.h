@@ -72,6 +72,15 @@ public:
     bool isCrossSection();
 
     /**
+     * Checks whether the bot is off the line.
+     * If all sensors read value 1 (HIGH), then bot is off line.
+     * The LineDetector::detect() method must be invoked before calling this method since it uses the value read by the sensors.
+     * 
+     * @return Line status
+     */
+    bool isOffLine();
+
+    /**
      * Checks for the beginning of a node.
      * Nodes are 9x9 cm in dimension, and the beginning of every node is marked by an OFF-ON-OFF zone.
      * Assuming the bot is perfectly aligned, the sensors will follows this pattern
