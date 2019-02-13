@@ -47,7 +47,7 @@ public:
      * @param wall Wall index; LEFT, FRONT or RIGHT
      * @return Returns deviation if the distance is within threshold, otherwise the threshold value is returned.
      */
-    int detect(short);
+    int detect(byte);
 
     /**
      * Calculates the analog voltage value which will be passed to the motors.

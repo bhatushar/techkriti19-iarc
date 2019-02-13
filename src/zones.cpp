@@ -80,7 +80,7 @@ short mazeSolving(short primaryTurn) {
             - Bot is on a node: Cross the node, increase counter and display node type
         */
         else {
-            if (Globals::line.ifOffLine()) {
+            if (Globals::line.isOffLine()) {
                 Globals::driver.move(primaryTurn, 0, 180); // Rotate 180 degrees at base volt
             }
             // Cross-section

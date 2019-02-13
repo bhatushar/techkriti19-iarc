@@ -84,7 +84,7 @@ int WallDetector::calcVolt(int err) {
         int x = (sensors[FRONT].mm > MAX_DIST) ? 0 : AVG_DIST - sensors[FRONT].mm;
         
         // Standard PID caluclations
-        P = (kP1 * err) + (kP2 * x);1
+        P = (kP1 * err) + (kP2 * x);
         D = kD * (err - prevErr);
         errSum += err;
         prevErr = err;
