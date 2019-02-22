@@ -11,17 +11,22 @@ union Distance {
   char bytes[sizeof(float)];
 };
 
+// IR pins
+const byte ir_out = 3, ir_vcc = 5, ir_gnd = 4;
+
+// Values read by the sensor
+byte oldVal, newVal;
+
+// Ecoder signal
+// Determines whether to start the encoder or not.
+bool startEncoder = false;
+
 /**
  * Variable stores the number of times encoder was triggered
- * volatile - susceptible to change
- * register - for fater loading
  * unsigned - only counts in non-negative
  * long - possibly a large value
  */
-volatile unsigned long ticks;
-
-// ISR; increments ticks by 1 on each invokation
-void countTicks() { ticks++; }
+unsigned long ticks;
 
 /**
  * Invoked when Slave recives instruction from Master.
@@ -33,16 +38,19 @@ void countTicks() { ticks++; }
  */
 void receiveEvent(int numBytes) {
   byte code = Wire.read(); // Read code
-  // TODO set encoder pin
   if (code == 1) {
     // Initialize encoder
     ticks = 0;
-    // Only one way interrupt is necessary
-    // countTicks is invoked when value of pin changes from LOW to HIGH
-    attachInterrupt(digitalPinToInterrupt(0), countTicks, RISING);
+    startEncoder = true;
+    // Turn on the IR sensor
+    digitalWrite(ir_vcc, HIGH);
+    // Read initial value
+    oldVal = digitalRead(ir_out);
   } else if (code == 0) {
     // Stop encoder
-    detachInterrupt(digitalPinToInterrupt(0));
+    startEncoder = false;
+    // Turn of IR sensor
+    digitalWrite(ir_vcc, LOW);
   }
 }
 
@@ -55,8 +63,7 @@ void calcDistace() {
   Distance dist;
   float pi = 3.14,
     diameter = 7, // Diameter of wheel
-    // TODO find tickRate
-    tickRate = 0; // Ticks in 1 rotation
+    tickRate = 8; // Number of ticks per rotation
 
   // Rotations made by the wheel
   float rotations = ticks / tickRate; 
@@ -66,6 +73,15 @@ void calcDistace() {
 
 // Starting point
 void setup() {
+  // Set IR pin modes
+  pinMode(ir_vcc, OUTPUT);
+  pinMode(ir_gnd, OUTPUT);
+  pinMode(ir_out, INPUT);
+
+  // Always at LOW
+  // Only ir_vcc state varies
+  digitalWrite(ir_gnd, LOW);
+
   // Join I2C bus with address #8
   Wire.begin(8);
 
@@ -74,4 +90,15 @@ void setup() {
   Wire.onRequest(calcDistace);
 }
 
-void loop() {}
+void loop() {
+  // Check whether to start the encoder or not
+  if (startEncoder) {
+    newVal = digitalRead(ir_out); // Read sensor data
+    
+    // Change in state
+    if (newVal != val) {
+      ticks++; // Update tick count
+      oldVal = newVal; // Store value
+    }
+  }
+}
